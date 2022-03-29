@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import com.vaadin.experimental.FeatureFlags;
 import com.vaadin.flow.di.Lookup;
@@ -28,24 +30,34 @@ public class FeatureFlagCondition implements Condition {
         if (featureFlags == null) {
             featureFlags = getFeatureFlags(context);
         }
-        String featureId = (String) metadata.getAnnotationAttributes(
-                ConditionalOnFeatureFlag.class.getName()).get("value");
+        Map<String, Object> annotationAttributes = metadata
+                .getAnnotationAttributes(
+                        ConditionalOnFeatureFlag.class.getName());
+        if (annotationAttributes == null) {
+            throw new IllegalArgumentException(
+                    getClass().getName() + " can only be used through an @"
+                            + ConditionalOnFeatureFlag.class.getSimpleName()
+                            + " annotation and none was found");
+        }
+        String featureId = (String) annotationAttributes.get("value");
         return featureFlags.isEnabled(featureId);
     }
 
     private FeatureFlags getFeatureFlags(ConditionContext context) {
+        ClassLoader classLoader = Objects
+                .requireNonNull(context.getClassLoader());
+
         ResourceProvider provider = new ResourceProvider() {
 
             @Override
             public URL getApplicationResource(String path) {
-                return context.getClassLoader().getResource(path);
+                return classLoader.getResource(path);
             }
 
             @Override
             public List<URL> getApplicationResources(String path)
                     throws IOException {
-                return Collections
-                        .list(context.getClassLoader().getResources(path));
+                return Collections.list(classLoader.getResources(path));
             }
 
             @Override

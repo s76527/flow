@@ -41,7 +41,6 @@ public class MainGenerator {
     private final ClientAPIGenerator clientGenerator;
     private final GenerationOutputDirectory outputDirectory;
     private final OpenAPIParser parser;
-    private FeatureFlags featureFlags;
 
     /**
      * Initializes the generator.
@@ -114,7 +113,6 @@ public class MainGenerator {
     public MainGenerator(File openApiJsonFile, File outputDirectory,
             Properties properties, String defaultClientPath,
             FeatureFlags featureFlags) {
-        this.featureFlags = featureFlags;
         Objects.requireNonNull(openApiJsonFile);
         Objects.requireNonNull(outputDirectory);
 
