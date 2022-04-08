@@ -33,6 +33,7 @@ public class ScopesIT extends AbstractSpringTest {
     @Test
     public void checkSessionScope() throws Exception {
         open();
+        waitForDevServer();
 
         String prefix = "foo";
         String text = findElement(By.id("message")).getText();
@@ -55,6 +56,7 @@ public class ScopesIT extends AbstractSpringTest {
     @Test
     public void checkUiScope() throws Exception {
         getDriver().get(getTestURL() + "ui-scope");
+        waitForDevServer();
 
         String mainId = findElement(By.id("main")).getText();
 
